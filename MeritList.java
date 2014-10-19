@@ -2,10 +2,12 @@ import java.util.HashMap;
 
 public class MeritList {
 
-	private HashMap rankmap;                                            
-	private int category;
+	private HashMap rankMap;
+	//private Integer category;//might map to int
+	private String category;
+	boolean pd; 	//not required
 	
-	private class CombinedRank{                                         
+	private class CombinedRank{
 		private String cat;
 		private Integer rank;
 		public CombinedRank(String cat,Integer rank){
@@ -22,38 +24,20 @@ public class MeritList {
 		}
 			
 	}
-	public MeritList(int cat){                                          ////with argument as cat
-		rankmap=new HashMap<String,int>();			//destructor
-		category=cat;
-	}
-	public HashMap getMap(){                       //returns hashmap datamember of meritlist class
-		return this.rankmap;
-	}
-	public int size(){                             //return size of hashmap datamember of meritlist class
-		return rankmap.size();
-	}
-	public void updateRank(int val){                //increases values(here rank) by a given val(given as parameter) 
-		Set<String> set=rankmap.keySet();
-		for(String s: set) rankmap.put(s,rankmap.get(s)+val);
-	}
-	public void addMap(MeritList m){                //adds another hashmap to the hashmap of given meritllist class
-		this.rankmap.putAll(m.getMap());
+	public MeritList(String category){
+		rankMap=new HashMap();			//destructor
+		//pd=false;
+		//this.category=category;
 	}
 	
-	public void addCand(String id,Integer rank){    
+	public void addCand(String id,Integer rank){
 		if(rank!=0){
 			rankMap.put(id,new CombinedRank(id,rank));
 		}
 	}
 	
-	
-			
-			
-			
-			
-			
-			
-			
+	public void completeMap(MeritList GE,MeritList SC,MeritList ST){                //think of a better method
+		if (this.category=="GE-PD" || this.category=="OBC" || this.category=="OBC-PD"){
 			
 			//do this
 //			for(Map.Entry e : a.entrySet())  
@@ -62,10 +46,11 @@ public class MeritList {
 			}
 	}
 	
-	//public boolean isGreater(CombinedRank other){			//improve
-		
-		//}
+	public boolean isGreater(CombinedRank other){			//improve
+		if(this.category=="OBC"){
+			//do later
+		}
 	}
 	
 	
-
+}

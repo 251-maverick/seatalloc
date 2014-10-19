@@ -1,52 +1,85 @@
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Vector;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Vector;
+
 public class GaleShapleyAdmission{
-	private HashMap virtualProgramme; 
+	//put datamembers
 	private Vector<VirtualProgramme> program;
+	private LinkedList<Candidate> candidateList=new LinkedList<Candidate>();
+	private HashMap<String,VirtualProgramme> vpMap=new HashMap<String,VirtualProgramme>();
+	
 	public GaleShapleyAdmission() throws FileNotFoundException{ 
-		virtualProgramme=new HashMap<String,VirtualProgramme>();   //virtualProgramme is hashmap of (code_of_program+'-category_code',corresponding virtual program)
 		Scanner scan=new Scanner(new File("./programs.csv"));
 		boolean firstline=true;
 		String s;
-		while(scan.hasNextLine()){                              //reads from program.csv and creates virtualProgramme hashmap
+		while(scan.hasNextLine()){
 			if(firstline) continue;
-			s=scan.NextLine();
+			s=scan.nextLine();
 			String[] fields=s.split(",");
 			for(int i=3;i<11;i++){
-			VirtualProgramme p;
-			p=new VirtualProgramme(i-3,fields[i]);               //see if vp object can be created without any import or smthing
-			virtualProgramme.put(fields[1]+"-"+(i-3),p);
+			VirtualProgramme p(i-3,fields[i]);
+			program.addElement(p);
 			}
 			firstline=false;
 			}
-			}
+	}
 	
-		}
+	public void inputCandidate() throws FileNotFoundException{
 		
-	public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'combined' hashmap which caters to seat deservation
-			if(cat==0 || cat==2 || cat==3){                           
-			return meritlist[cat];
+		Scanner scan=new Scanner(new File("./choices.csv"));
+		scan.nextLine();
+		String s;
+		while(scan.hasNextLine()){
+			s=scan.nextLine();
+			
+			/** taking each candidates input */
+			String[] field=s.split(",");
+			for(int i=0;i<3;i++){
+				Candidate c=new Candidate(field[0],field[1],field[2]);
+				c.addPreference(field[3]);			//put nxt and prv pointers
+				candidateList.add(c);				//set initial next pref also in this
+			}
 		}
-		else if(cat==1 || cat==4 || cat==5){
-			meritlist[0].updateRank(meritList[cat].size());
-			meritlist[cat].addMap(meritlist[0]);
-			return meritlist[cat];
-		}
-		
-		
-		else if(cat==6 || cat==7){
-			meritlist[cat-4].updateRank(meritList[cat].size());
-			meritlist[cat].addMap(meritlist[cat-4]);
-			return meritlist[cat];
+		ListIterator<Candidate> itr=candidateList.listIterator();
+//		while(itr.hasNext()){
+//			itr.setNext(itr.next());
+//		}
+	}
+	
+	public void candidateApply(){
+		ListIterator<Candidate> itr=candidateList.listIterator();
+		while(itr.hasNext()){
+			Candidate c=itr.next(); 
+		    if(c.getCurrProg()=="-1"){
+		    	if(c.getNextPref() !=-1){
+		    		vpMap.get(c.getNextPref()).receiveApp(c);
+		    		c.setNextPref(c.getNextPref()+1);
+		    	}
+		    }
 		}
 	}
 	
-	public 
-		
+	public void createWaitlist(){
+//		Iterator it= vpMap.entrySet().iterator();
+//		while(it.hasNext()){
+//			//Map.Entry<String,VirtualProgramme> vp = it.next();
+//			
+//		}
+		for (Map.Entry<String, VirtualProgramme> entry : vpMap.entrySet()) {
 			
-			
+		}
+	}
+	
+	
+	
+	
+}
+
 		
