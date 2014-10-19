@@ -6,7 +6,8 @@ public class Candidate {
 	/**
 	 * @param args
 	 */
-	private String id,category;
+	private String id;
+	int category;
 	private boolean nat,pd,ds;   /** nat 0 implies indian, 1 implies foreign */
 	private Vector<String> preference;
 	private int nextPref;
@@ -18,12 +19,22 @@ public class Candidate {
 	
 	public Candidate(String id,String cat,String pd){
 		this.id=id;
-		this.category=cat;
+		ds=false;
 		if(cat=="F"){this.nat=true;}
-		if(cat=="DS"){this.ds=true;}
+		else this.nat=false;
 		
 		if(pd=="Y"){this.pd=true;}
 		else this.pd=false;
+		
+		if(cat=="GE"){category=0;}
+		else if(cat="OBC"){category=1;}
+		else if(cat="SC"){category=2;}
+		else if(cat="ST"){category=3;}
+		else if(cat="DS"){category=0;ds=true;}
+		else if(cat="DS-OBC"){category=1;ds=true;}
+		else if(cat="DS-SC"){category=2;ds=true;}
+		else if(cat="DS-ST"){category=3;ds=true;}
+		if(this.pd==true){this.category=this.category+4;}
 		nextPref=0;
 		setCurrProg("NONE");
 		preference=new Vector<String> (0);

@@ -9,8 +9,8 @@ public class VirtualProgramme {
 	private int quota;
 	private List<String> waitList;
 	private List<String> appList;
-	private List<Integer> foreignCand;
-	private List<Integer> dsCand;
+	private List<String> foreignCand;
+	//private List<Integer> dsCand;  //I think we don't need this
 	/** candidate whose index is equalto quota */
 	private String candQuota; //
 	
@@ -25,7 +25,12 @@ public class VirtualProgramme {
 	}
 	
 	public void receiveApp (Candidate candidate){
-		//sort
+		if(if candidate.nat==true){
+			foreignCand.add(candidate.id);
+		}
+		else{
+			appList.add(candidate.id);
+		}
 		
 	}
 	
