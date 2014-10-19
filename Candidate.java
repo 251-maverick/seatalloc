@@ -24,9 +24,9 @@ public class Candidate {
 		preference=new Vector<String> (0);
 	}
 	
-	public void addPreference(String prefList){//currpref=0
+	public void addPreference(String prefList){                    //function to create a preference list for the candidate
 		String pref;
-		if(prefList.indexOf('_')==-1) pref=prefList;
+		if(prefList.indexOf('_')==-1) pref=prefList;               
 		else pref=prefList.substring(0,prefList.indexOf('_'));
 		int prev=-1,k=-1,last;
 		last=prefList.lastIndexOf('_');
@@ -36,60 +36,60 @@ public class Candidate {
 			if(k!=-1) pref=prefList.substring(prev+1,k);
 			else pref=prefList.substring(last+1);
 			if(category==0){
-				preference.addElement(pref+"-GE");           ////if pref is IITB-CSE then IITB-CSE-GE is added to preference list
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-OBC-PD");
+				preference.addElement(pref+"-0");           //if pref is B4110 then B4110-0 is added to preference list
+				preference.addElement(pref+"-1");       //0..7 represent categories as given in table of lab10 statement..top to down
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-5");
 			}
 			else if(category==1){
-				preference.addElement(pref+"-GE");
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-OBC-PD");
+				preference.addElement(pref+"-0");
+				preference.addElement(pref+"-1");
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-5");
 			}
 			else if(category==2){
-				preference.addElement(pref+"-GE");
-				preference.addElement(pref+"-SC");
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-OBC-PD");
-				preference.addElement(pref+"-SC-PD");
+				preference.addElement(pref+"-0");
+				preference.addElement(pref+"-2");
+				preference.addElement(pref+"-1");
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-5");
+				preference.addElement(pref+"-6");
 			}
 			else if(category==3){
-				preference.addElement(pref+"-GE");
-				preference.addElement(pref+"-ST");
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-OBC-PD");
-				preference.addElement(pref+"-ST-PD");
+				preference.addElement(pref+"-0");
+				preference.addElement(pref+"-3");
+				preference.addElement(pref+"-1");
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-5");
+				preference.addElement(pref+"-7");
 			}
 			else if(category==4){
-				preference.addElement(pref+"-GE");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-OBC-PD");
+				preference.addElement(pref+"-0");
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-1");
+				preference.addElement(pref+"-5");
 			}
 			else if(category==5){
-				preference.addElement(pref+"-GE");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-OBC-PD");
+				preference.addElement(pref+"-0");
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-1");
+				preference.addElement(pref+"-5");
 			}
 			else if(category==6){
-				preference.addElement(pref+"-GE");
-				preference.addElement(pref+"-SC");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-SC-PD");
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-OBC-PD");
+				preference.addElement(pref+"-0");
+				preference.addElement(pref+"-2");
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-6");
+				preference.addElement(pref+"-1");
+				preference.addElement(pref+"-5");
 			}
 			else if(category==7){
-				preference.addElement(pref+"-GE");
-				preference.addElement(pref+"-ST");
-				preference.addElement(pref+"-GE-PD");
-				preference.addElement(pref+"-ST-PD");
-				preference.addElement(pref+"-OBC");
-				preference.addElement(pref+"-OBC-PD");
+				preference.addElement(pref+"-0");
+				preference.addElement(pref+"-3");
+				preference.addElement(pref+"-4");
+				preference.addElement(pref+"-7");
+				preference.addElement(pref+"-1");
+				preference.addElement(pref+"-5");
 			}
 		} while(k!=-1);
 			
