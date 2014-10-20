@@ -15,9 +15,9 @@ public class Candidate {
 	/** pointer to next candidate */
 	private Candidate next;			//protected
 	private Candidate prv;
+	private Integer index;
 	
-	
-	public Candidate(String id,String cat,String pd){
+	public Candidate(String id,String cat,String pd,Integer i){
 		this.id=id;
 		ds=false;
 		if(cat=="F"){this.nat=true;}
@@ -38,6 +38,7 @@ public class Candidate {
 		nextPref=0;
 		setCurrProg("NONE");
 		preference=new Vector<String> (0);
+		this.index=i;
 	}
 	
 	public void addPreference(String prefList){

@@ -8,7 +8,7 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class GaleShapleyAdmission {
-	private HashMap<String,VirtualProgramme> vpMap; 
+	private HashMap<String,VirtualProgramme> vpMap;//change String to class Preference ? 
 	private Vector<HashMap<String,Integer> > mlMap;
 	
 	public GaleShapleyAdmission() throws FileNotFoundException{ 
@@ -113,21 +113,23 @@ public class GaleShapleyAdmission {
 //			itr.setNext(itr.next());
 //		}
 	}*/
-public void inputCandidate() throws FileNotFoundException{
+public void inputCandidate() throws FileNotFoundException{//added index i// no more changes required mostly
 		
 		Scanner scan=new Scanner(new File("./choices.csv"));
 		scan.nextLine();
 		String s;
+		int i=0;
 		while(scan.hasNextLine()){
 			s=scan.nextLine();
 			
 			/** taking each candidates input */
 			String[] field=s.split(",");
 			for(int i=0;i<3;i++){
-				Candidate c=new Candidate(field[0],field[1],field[2]);
+				Candidate c=new Candidate(field[0],field[1],field[2],i);
 				c.addPreference(field[3]);			//put nxt and prv pointers
 				candidateList.add(c);				//set initial next pref also in this
 			}
+			i++;
 		}
 		ListIterator<Candidate> itr=candidateList.listIterator();
 //		while(itr.hasNext()){
