@@ -81,7 +81,15 @@ public class VirtualProgramme {
 		}
 		removeExtra(ml);
 		//for rest currProg="-1"
-		//foreign candidates?? @PALAK
+		//foreign candidates?? @PALAK Done @CHARMI
+		
+		ListIterator<String> Foreignitr=this.foreignCand.listIterator();
+		while(Foreignitr.hasNext()){
+			Candidate current=Foreignitr.next();
+			if(ml[current.getId]>ml[waitList.get(waitList.size()-1)]){
+				rejectedList.add(current);
+				this.foreignCand.remove(current);
+			}
 	}
 
 	public String getCategory() {
