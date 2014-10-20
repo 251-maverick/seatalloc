@@ -43,12 +43,12 @@ public class GaleShapleyAdmission {
 			}
 		}
 		VirtualProgramme p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17;
-		p0=new Virtualprogramme();p1=new Virtualprogramme();p2=new Virtualprogramme();
-		p3=new Virtualprogramme();p4=new Virtualprogramme();p5=new Virtualprogramme();
-		p6=new Virtualprogramme();p7=new Virtualprogramme();p8=new Virtualprogramme();
-		p9=new Virtualprogramme();p10=new Virtualprogramme();p11=new Virtualprogramme();
-		p12=new Virtualprogramme();p13=new Virtualprogramme();p14=new Virtualprogramme();
-		p15=new Virtualprogramme();p16=new Virtualprogramme();p17=new Virtualprogramme();
+		p0=new VirtualProgramme();p1=new VirtualProgramme();p2=new VirtualProgramme();
+		p3=new VirtualProgramme();p4=new VirtualProgramme();p5=new VirtualProgramme();
+		p6=new VirtuaProgramme();p7=new VirtualProgramme();p8=new VirtualProgramme();
+		p9=new VirtualProgramme();p10=new VirtualProgramme();p11=new VirtualProgramme();
+		p12=new VirtualProgramme();p13=new VirtualProgramme();p14=new VirtualProgramme();
+		p15=new VirtualProgramme();p16=new VirtualProgramme();p17=new VirtualProgramme();
 		vpMap.put("B",p0);vpMap.put("D",p1);vpMap.put("K",p2);vpMap.put("M",p3);vpMap.put("G",p4);
 		vpMap.put("R",p5);vpMap.put("W",p6);vpMap.put("A",p7);vpMap.put("C",p8);vpMap.put("E",p9);
 		vpMap.put("H",p10);vpMap.put("J",p11);vpMap.put("N",p12);vpMap.put("P",p13);vpMap.put("S",p14);

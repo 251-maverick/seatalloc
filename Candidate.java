@@ -18,7 +18,7 @@ public class Candidate {
 	public Candidate(String id,String cat,String pd,Integer i){
 		this.setId(id);
 		ds=false;
-		if(cat=="F"){this.nat=true;}
+		if(cat=="F"){this.nat=true;category=0;}
 		else this.nat=false;
 		
 		if(pd=="Y"){this.pd=true;}

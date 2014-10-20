@@ -123,6 +123,17 @@ public class VirtualProgramme {
 		rejectedList.addAll(removeExtra(ml));
 		
 		//foreign candidates?? @PALAK
+		if(waitList.size()<quota){}
+		else {
+			ListIterator<Candidate> forItr=foreignCand.listIterator();
+			while(itr.hasNext()){
+				Candidate curr=itr.next();
+				Candidate last=waitList.get(waitList.size()-1);
+				if(ml.compareRank(curr.getId(),last.getId())){//not sure if this should be true or false @charmi
+					foreignCand.remove(curr);				//if last better than curr
+					rejectedList.add(curr.getIndex());							//
+				}
+			}
 		/** update currProg */
 		/**make applist empty */
 		appList.clear();
