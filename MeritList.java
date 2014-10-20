@@ -1,13 +1,13 @@
+package seatallotment;
+
 import java.util.HashMap;
+import java.util.Set;
 
 public class MeritList {
-
-	private HashMap rankMap;
-	//private Integer category;//might map to int
-	private String category;
-	boolean pd; 	//not required
+	private HashMap<String,Integer> rankMap;                                            
+	private int category;
 	
-	private class CombinedRank{
+	private class CombinedRank{                                         
 		private String cat;
 		private Integer rank;
 		public CombinedRank(String cat,Integer rank){
@@ -24,33 +24,32 @@ public class MeritList {
 		}
 			
 	}
-	public MeritList(String category){
-		rankMap=new HashMap();			//destructor
-		//pd=false;
-		//this.category=category;
+	public MeritList(int cat){                                          ////with argument as cat
+		rankMap=new HashMap<String,Integer>();			//destructor
+		category=cat;
+	}
+	public HashMap<String,Integer> getMap(){                       //returns hashmap datamember of meritlist class
+		return this.rankMap;
+	}
+	public int size(){                             //return size of hashmap datamember of meritlist class
+		return rankMap.size();
+	}
+	public void updateRank(int val){                //increases values(here rank) by a given val(given as parameter) 
+		Set<String> set=rankMap.keySet();
+		for(String s: set) rankMap.put(s,rankMap.get(s)+val);
+	}
+	public void addMap(MeritList m){                //adds another hashmap to the hashmap of given meritllist class
+		this.rankMap.putAll(m.getMap());
 	}
 	
-	public void addCand(String id,Integer rank){
-		if(rank!=0){
-			rankMap.put(id,new CombinedRank(id,rank));
-		}
+	//public void addCand(String id,Integer rank){    
+		//if(rank!=0){
+			//rankMap.put(id,new CombinedRank(id,rank)); //kya kiya h?
+		//}
+	
+public boolean isGreater(CombinedRank other){			//improve
+	if(this.category=="OBC"){
+		//do later
 	}
-	
-	public void completeMap(MeritList GE,MeritList SC,MeritList ST){                //think of a better method
-		if (this.category=="GE-PD" || this.category=="OBC" || this.category=="OBC-PD"){
-			
-			//do this
-//			for(Map.Entry e : a.entrySet())  
-//				  if(!b.containsKey(e.getKey())
-//				    b.put(e.getKey(), e.getValue());		
-			}
-	}
-	
-	public boolean isGreater(CombinedRank other){			//improve
-		if(this.category=="OBC"){
-			//do later
-		}
-	}
-	
-	
+}
 }
