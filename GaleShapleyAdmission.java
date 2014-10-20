@@ -1,3 +1,5 @@
+package seatallocation;
+
 package seatallotment;
 
 import java.io.File;
@@ -11,7 +13,7 @@ import java.util.Vector;
 
 public class GaleShapleyAdmission {
 	private HashMap<String,VirtualProgramme> vpMap; 
-	private Vector<MeritList> mlMap;
+	private HashMap<String,Integer>[] mlMap;               //changed to array by rr
 	private Vector<Candidate> candidateList;
 	private LinkedList<Integer> currCand;
 	
@@ -21,6 +23,7 @@ public class GaleShapleyAdmission {
 		this.createVP();
 		this.inputCandidate();
 		this.ranklistInput();
+		mlMap=new HashMap<String,Integer>[9];
 	}
 	
 	public void createVP() throws FileNotFoundException{
@@ -57,18 +60,23 @@ public class GaleShapleyAdmission {
 	}
 
 	public void ranklistInput() throws FileNotFoundException{
-		for(int i=0;i<8;i++){ mlMap.add(i,new MeritList(i));} //initialize the list
-		Scanner scan=new Scanner(new File("./ranklist.csv"));
-		scan.nextLine();
+		for(int i=0;i<8;i++) mlMap.add(i,new HashMap<String,Integer>()); //initialize the list
+		scan=new Scanner(new File("./ranklist.csv"));
+		boolean firstline=true;
 		while(scan.hasNextLine()){
+			if(firstline){
+				firstline=false;
+				continue;
+			}
 			String s=scan.nextLine();
 			String[] fields=s.split(",");
 			for(int i=3;i<11;i++){
 				Integer x=Integer.parseInt(fields[i]);
 				if(x!=0){
-					mlMap.get(i-3).rankMap.put(fields[0],x);
-				}
+					mlMap.get(i-3).put(fields[0],x);         //cr
+			
 			}
+				mlMap.get()
 		}
 	}//end of RanklistInput
 	
@@ -93,7 +101,27 @@ public class GaleShapleyAdmission {
 		}
 
 	}
+	public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'combined' hashmap which caters to seat deservation
+		if(cat==0 || cat==2 || cat==3){                           
+		return meritlist[cat];
+	}
+	else if(cat==1 || cat==4 || cat==5){
+		meritlist[0].updateRank(meritlist[cat].size());
+		meritlist[cat].addMap(meritlist[0]);
+		return meritlist[cat];
+	}
 	
+	
+	else if(cat==6 || cat==7){
+		meritlist[cat-4].updateRank(meritlist[cat].size());
+		meritlist[cat].addMap(meritlist[cat-4]);
+		return meritlist[cat];
+	}
+	else if(cat==8){
+		return meritlist[0];
+	}
+}
+
 	
 
 public boolean candidateApply(){
@@ -104,25 +132,20 @@ public boolean candidateApply(){
 	for (Iterator<Integer> it = currCand.iterator(); it.hasNext(); ){
         index = it.next(); 
 		Candidate c=candidateList.get(index); //hoe its reference
-	    if(c.getNextPref() !=-1){
+	    if(c.getNextPref() !=-1){                                          
 	    	prefComplete=false;
-	    	if((c.getNextProg()).endsWith("ds")){                    ////this if bracket added by r
-	    		String s=(c.getNextProg()).substring(0,0);
-	    		System.out.println("Adding app to ds program "+s);
-	    		vpMap.get(s).receiveApp(c);
+	    	if((c.getNextPref()).endsWith("ds")){                    ////this if bracket added by r
+	    		String s=(c.getNextPref()).substring(0,1);
+	    		(vpMap.get(s)).receiveApp(c);
 	    		c.setCurrProg(c.getNextPref());
 		    	c.setNextPref(c.getNextPref()+1);
 	    	}
 	    	else {
-	    		vpMap.get(c.get).receiveApp(c);
+	    		vpMap.get(c.getNextPref()).receiveApp(c);
 	    	    c.setCurrProg(c.getNextPref());
 	    	    c.setNextPref(c.getNextPref()+1);
 	    }
-//	    	vpMap.get(c.getNextPref()).receiveApp(c);
-//	    	c.setCurrProg(c.getNextPref());
-//	    	c.setNextPref(c.getNextPref()+1);
 	    }
-	 
 	}
 	currCand.clear();
 	if(prefComplete){return false;}
@@ -163,13 +186,12 @@ public void updateCurrProg(LinkedList<Integer> rej){
 public void createWaitlist(){
 	LinkedList<Integer> rejectedList=new LinkedList<Integer>();
 	for (VirtualProgramme vp : vpMap.values()) {
-		rejectedList=vp.filterApp(mlMap.get(vp.getCategory()));  
-		//vp category shud b int
+		rejectedList=vp.filterApp(mlMap.get(vp.getCategory()));  //vp category shud b int
 		updateCurrProg(rejectedList);
 		currCand.addAll(rejectedList);
 	}
 	for (VirtualProgramme vp : vpMap.values()) {
-		rejectedList=vp.filterApp(mlMap.get(vp.getCategory()));  //vp category shud b int
+		rejectedList=vp.filterApp(mlMap[vp.getCategory()]);  //vp category shud b int
 		updateCurrProg(rejectedList);
 		currCand.addAll(rejectedList);
 
@@ -177,27 +199,11 @@ public void createWaitlist(){
 }
 
 
-public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'combined' hashmap which caters to seat deservation
-			if(cat==0 || cat==2 || cat==3){                           //y here not in ml @Palak
-			return meritlist[cat];
-		}
-		else if(cat==1 || cat==4 || cat==5){
-			meritlist[0].updateRank(meritlist[cat].size());
-			meritlist[cat].addMap(meritlist[0]);
-			return meritlist[cat];
-		}
-		
-		
-		else if(cat==6 || cat==7){
-			meritlist[cat-4].updateRank(meritlist[cat].size());
-			meritlist[cat].addMap(meritlist[cat-4]);
-			return meritlist[cat];
-		}
-	}
+
 
 public void output(){
 	for(int i=0;i<candidateList.size();i++){
-		System.out.println(candidateList.get(i).getId()+" "+candidateList.get(i).getCurrProg().substring(0, 4));
+		System.out.println(candidateList.get(i).getId()+" "+candidateList.get(i).getCurrProg());
 	}
 }
 
@@ -209,3 +215,4 @@ public void gsAlgo(){
 }
 
 }
+

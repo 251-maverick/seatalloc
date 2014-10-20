@@ -1,10 +1,10 @@
-package seatallotment;
+package seatallocation;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class MeritList {
-	private HashMap<String,Integer> rankMap;                                            
+
+	private HashMap<String,Integer> rankmap;                                            
 	private int category;
 	
 	private class CombinedRank{                                         
@@ -16,40 +16,69 @@ public class MeritList {
 		}
 		
 		public String getCat(){
-			return cat;
-		}
-		
-		public Integer getRank(){
-			return rank;
+			return category;
 		}
 			
 	}
 	public MeritList(int cat){                                          ////with argument as cat
-		rankMap=new HashMap<String,Integer>();			//destructor
+		rankmap=new HashMap<String,Integer>();			//destructor
 		category=cat;
 	}
 	public HashMap<String,Integer> getMap(){                       //returns hashmap datamember of meritlist class
-		return this.rankMap;
+		return this.rankmap;
 	}
 	public int size(){                             //return size of hashmap datamember of meritlist class
-		return rankMap.size();
+		return rankmap.size();
 	}
 	public void updateRank(int val){                //increases values(here rank) by a given val(given as parameter) 
-		Set<String> set=rankMap.keySet();
-		for(String s: set) rankMap.put(s,rankMap.get(s)+val);
+		Set<String> set=rankmap.keySet();
+		for(String s: set) rankmap.put(s,rankmap.get(s)+val);
 	}
 	public void addMap(MeritList m){                //adds another hashmap to the hashmap of given meritllist class
-		this.rankMap.putAll(m.getMap());
+		this.rankmap.putAll(m.getMap());
+	}
+	public int getRank(String id){
+		return rankmap.get(id);
 	}
 	
-	//public void addCand(String id,Integer rank){    
-		//if(rank!=0){
-			//rankMap.put(id,new CombinedRank(id,rank)); //kya kiya h?
+	
+	public void addCand(String id,Integer rank){    
+		if(rank!=0){
+			rankMap.put(id,new CombinedRank(id,rank));
+		}
+	}
+	
+	
+			
+			
+			
+			
+			
+			
+			
+			
+			//do this
+//			for(Map.Entry e : a.entrySet())  
+//				  if(!b.containsKey(e.getKey())
+//				    b.put(e.getKey(), e.getValue());		
+			}
+	}
+	
+	public boolean isGreater(Candidate a,Candidate b){  //true if a's rank is larger than b's rank
+		if(this.getRank(a.getId())>this.getRank(b.getId())) return true;
+		return false;
+	}
+	public boolean compareRank(Candidate a,Candidate b){ //assumption:a is always waitlisted last candidate and b is in applist 
+		if(this.getRank(b.getId())==0) return false;    //return true if eligible to come in waitlist
+		if(isGreater(a,b)) return true;
+		else if(isGreater(b,a)) return false;
+		else return true;
+	}
+	
+		
+		
 		//}
-	
-public boolean isGreater(CombinedRank other){			//improve
-	if(this.category=="OBC"){
-		//do later
 	}
-}
-}
+	
+	
+
