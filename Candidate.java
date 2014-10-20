@@ -1,80 +1,125 @@
+/**
+ * 
+ */
+package seatallocation;
+
+/**
+ * @author rishabhraj
+ *
+ */
 import java.util.Vector;
 
 
-public class Candidate {
+	public class Candidate {
 
-	/**
-	 * @param args
-	 */
-	private String id,category;
-	private boolean nat,pd,ds;   /** nat 0 implies indian, 1 implies foreign */
-	private Vector<String> preference;
-	private int nextPref;
-	private String currProg;
-	/** pointer to next candidate */
-	private Candidate next;			//protected
-	private Candidate prv;
-	
-	
-	public Candidate(String id,String cat,String pd){
-		this.id=id;
-		this.category=cat;
-		if(cat=="F"){this.nat=true;}
-		if(cat=="DS"){this.ds=true;}
+		/**
+		 * @param args
+		 */
+		private String id;
+		private int category;
+		private boolean nat,ds;   /** nat 0 implies indian, 1 implies foreign */
+		private Vector<String> preference;
+		private int nextPref;
+		private int currPref;
+		private String currProg;
 		
-		if(pd=="Y"){this.pd=true;}
-		else this.pd=false;
-		nextPref=0;
-		setCurrProg("NONE");
-		preference=new Vector<String> (0);
-	}
-	
-	public void addPreference(String prefList){
-		//currPref=0;			//complete
-	}
+		public Candidate(String id,int  cat,boolean nat,boolean ds){ //correct later after clarity on ds input
+			this.id=id;
+			category=cat;
+			this.nat=nat;
+			this.ds=ds;
+			currPref=-1;
+			currProg="NONE";             
+			preference=new Vector<String> (0);
+		}
 		
-	
+		public void addPreference(String prefList){                    //function to create a preference list for the candidate
+			String pref;
+			if(prefList.indexOf('_')==-1) pref=prefList;               
+			else pref=prefList.substring(0,prefList.indexOf('_'));
+			int prev=-1,k=-1,last;
+			last=prefList.lastIndexOf('_');
+			do{
+				prev=k;
+				k=prefList.indexOf('_',k+1);
+				if(k!=-1) pref=prefList.substring(prev+1,k);
+				else pref=prefList.substring(last+1);
+				if(category==0){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");           //if pref is B4110 then B4110-0 is added to preference list
+					preference.addElement(pref+"-1");       //0..7 represent categories as given in table of lab10 statement..top to down
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-5");
+				}
+				else if(category==1){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");
+					preference.addElement(pref+"-1");
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-5");
+				}
+				else if(category==2){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");
+					preference.addElement(pref+"-2");
+					preference.addElement(pref+"-1");
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-5");
+					preference.addElement(pref+"-6");
+				}
+				else if(category==3){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");
+					preference.addElement(pref+"-3");
+					preference.addElement(pref+"-1");
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-5");
+					preference.addElement(pref+"-7");
+				}
+				else if(category==4){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-1");
+					preference.addElement(pref+"-5");
+				}
+				else if(category==5){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-1");
+					preference.addElement(pref+"-5");
+				}
+				else if(category==6){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");
+					preference.addElement(pref+"-2");
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-6");
+					preference.addElement(pref+"-1");
+					preference.addElement(pref+"-5");
+				}
+				else if(category==7){
+					if(ds) preference.addElement(pref+"-ds");
+					preference.addElement(pref+"-0");
+					preference.addElement(pref+"-3");
+					preference.addElement(pref+"-4");
+					preference.addElement(pref+"-7");
+					preference.addElement(pref+"-1");
+					preference.addElement(pref+"-5");
+				}
+			} while(k!=-1);
+			for(int i=0;i<preference.size();i++)System.out.println(preference.get(i)); //remove later
+		}
+			
+		
 
-	public String getCategory() {
-		return category;
-	}
+		
+		}
 
-	public boolean getNat(){
-		return nat;
-	}
-	
-	public boolean getPd(){
-		return pd;
-	}
-	
-	public boolean getDs(){
-		return ds;
-	}
-	
-	/** sets next candidate in original list ,used to display later*/
-	public void setNext(Candidate next){ this.next=next;}
 
-	public String getCurrProg() {
-		return currProg;
-	}
 
-	public void setCurrProg(String currProg) {
-		this.currProg = currProg;
-	}
+		
 
-	public int getNextPref() {
-		return nextPref;
-	}
-
-	public void setNextPref(int i) {
-		if(i<preference.size()){nextPref=i;}
-		else {i=-1;}
-	}
-	
-	
-
-	
-
+		}
 }
-
-	

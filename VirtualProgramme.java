@@ -1,27 +1,34 @@
+package seatallocation;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 public class VirtualProgramme {
 
-	private String category;
+	private int category;
 	private boolean pd;
 	private int quota;
 	private List<String> waitList;
 	private List<String> appList;
 	private List<Integer> foreignCand;
-	private List<Integer> dsCand;
+	private List<Integer> dsCand;                  //no need remove it
 	/** candidate whose index is equalto quota */
 	private String candQuota; //
 	
-	public VirtualProgramme(String cat, boolean pd, int quota){
+	public VirtualProgramme(int cat,int quota){
 		this.category=cat;
-		this.pd=pd;
 		this.quota=quota;
-		waitList = new LinkedList<String>;
-		appList = new LinkedList<String> (0);
-		this.foreignCand = new LinkedList<Integer> (0);
-		this.dsCand = new LinkedList<Integer> (0);
+		waitList = new LinkedList<String> ();
+		appList = new LinkedList<String> ();
+		this.foreignCand = new LinkedList<Integer> ();
+		//this.dsCand = new LinkedList<Integer> ();
+	}
+	public VirtualProgramme(){
+		this.category=8;
+		this.quota=2;
+		waitList = new LinkedList<String> ();
+		appList = new LinkedList<String> ();
 	}
 	
 	public void receiveApp (Candidate candidate){
@@ -99,3 +106,4 @@ public class VirtualProgramme {
 
 }
 //hashmap for v.p.
+

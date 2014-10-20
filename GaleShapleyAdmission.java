@@ -1,3 +1,5 @@
+package seatallocation;
+
 package seatallotment;
 
 import java.io.File;
@@ -42,10 +44,22 @@ public class GaleShapleyAdmission {
 				vpMap.put(field[1]+"-"+(i-3),p);
 			}
 		}
+		VirtualProgramme p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17;
+		p0=new Virtualprogramme();p1=new Virtualprogramme();p2=new Virtualprogramme();
+		p3=new Virtualprogramme();p4=new Virtualprogramme();p5=new Virtualprogramme();
+		p6=new Virtualprogramme();p7=new Virtualprogramme();p8=new Virtualprogramme();
+		p9=new Virtualprogramme();p10=new Virtualprogramme();p11=new Virtualprogramme();
+		p12=new Virtualprogramme();p13=new Virtualprogramme();p14=new Virtualprogramme();
+		p15=new Virtualprogramme();p16=new Virtualprogramme();p17=new Virtualprogramme();
+		vpMap.put("B",p0);vpMap.put("D",p1);vpMap.put("K",p2);vpMap.put("M",p3);vpMap.put("G",p4);
+		vpMap.put("R",p5);vpMap.put("W",p6);vpMap.put("A",p7);vpMap.put("C",p8);vpMap.put("E",p9);
+		vpMap.put("H",p10);vpMap.put("J",p11);vpMap.put("N",p12);vpMap.put("P",p13);vpMap.put("S",p14);
+		vpMap.put("U",p15);vpMap.put("V",p16);vpMap.put("S",p17);
+		
 	}
 
 	public void ranklistInput() throws FileNotFoundException{
-		for(int i=0;i<8;i++) mlMap.add(i,new HashMap<String,Integer()>); //initialize the list
+		for(int i=0;i<8;i++) mlMap.add(i,new HashMap<String,Integer>()); //initialize the list
 		scan=new Scanner(new File("./ranklist.csv"));
 		firstline=true;
 		while(scan.hasNextLine()){
@@ -96,13 +110,20 @@ public boolean candidateApply(){
 	for (Iterator<Integer> it = currCand.iterator(); it.hasNext(); ){
         index = it.next(); 
 		Candidate c=candidateList.get(index); //hoe its reference
-	    if(c.getNextPref() !=-1){
+	    if(c.getNextPref() !=-1){                                          
 	    	prefComplete=false;
-	    	vpMap.get(c.getNextPref()).receiveApp(c);
-	    	c.setCurrProg(c.getNextPref());
-	    	c.setNextPref(c.getNextPref()+1);
+	    	if((c.getNextPref()).endsWith("ds")){                    ////this if bracket added by r
+	    		String s=(c.getNextPref()).substring(0,1);
+	    		vpMap.get(s).receiveApp(c));
+	    		c.setCurrProg(c.getNextPref());
+		    	c.setNextPref(c.getNextPref()+1);
+	    	}
+	    	else {
+	    		vpMap.get(c.getNextPref()).receiveApp(c);
+	    	    c.setCurrProg(c.getNextPref());
+	    	    c.setNextPref(c.getNextPref()+1);
 	    }
-	 
+	    }
 	}
 	currCand.clear();
 	if(prefComplete){return false;}
@@ -188,3 +209,4 @@ public void gsAlgo(){
 }
 
 }
+
