@@ -18,10 +18,10 @@ public class MeritList {
 		public String getCat(){
 			return cat;
 		}
-		
-		public Integer getRank(){
-			return rank;
-		}
+		public int getRank(String id){
+		return rankmap.get(id);
+	}
+	
 			
 	}
 	
@@ -49,30 +49,19 @@ public class MeritList {
 			//rankMap.put(id,new CombinedRank(id,rank)); //kya kiya h?
 		//}
 	
-	
-	
-	public boolean compareRank(CombinedRank other){			//improve
-		if(this.category=="OBC"){
-		//do later
-		}
+	public boolean isGreater(Candidate a,Candidate b){  //true if a's rank is larger than b's rank
+		if(this.getRank(a.getId())>this.getRank(b.getId())) return true;
+		return false;
 	}
 	
-	public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'combined' hashmap which caters to seat deservation
-		if(cat==0 || cat==2 || cat==3){                           //y here not in ml @Palak
-		return meritlist[cat];
-	}
-	else if(cat==1 || cat==4 || cat==5){
-		meritlist[0].updateRank(meritlist[cat].size());
-		meritlist[cat].addMap(meritlist[0]);
-		return meritlist[cat];
+	public boolean compareRank(Candidate a,Candidate b){ //assumption:a is always waitlisted last candidate and b is in applist 
+		if(!this.check(b)) return false;    //return true if eligible to come in waitlist
+		if(isGreater(a,b)) return true;
+		else if(isGreater(b,a)) return false;
+		else return true;
 	}
 	
 	
-	else if(cat==6 || cat==7){
-		meritlist[cat-4].updateRank(meritlist[cat].size());
-		meritlist[cat].addMap(meritlist[cat-4]);
-		return meritlist[cat];
-	}
 }
 	public boolean check(Candidate c) {
 		if(rankMap.containsKey(c.getId())){return true;}

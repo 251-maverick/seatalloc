@@ -97,7 +97,26 @@ public class GaleShapleyAdmission {
 
 	}
 	
+	public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'combined' hashmap which caters to seat deservation
+		if(cat==0 || cat==2 || cat==3){                           
+		return meritlist[cat];
+	}
+	else if(cat==1 || cat==4 || cat==5){
+		meritlist[0].updateRank(meritlist[cat].size());
+		meritlist[cat].addMap(meritlist[0]);
+		return meritlist[cat];
+	}
 	
+	
+	else if(cat==6 || cat==7){
+		meritlist[cat-4].updateRank(meritlist[cat].size());
+		meritlist[cat].addMap(meritlist[cat-4]);
+		return meritlist[cat];
+	}
+	else if(cat==8){
+		return meritlist[0];
+	}
+}
 
 public boolean candidateApply(){
 	boolean allAssigned=true,prefComplete=true;
