@@ -4,109 +4,89 @@ import java.util.List;
 import java.util.ListIterator;
 public class VirtualProgramme {
 
-	private int category;	//
+	private String category;
 	private boolean pd;
 	private int quota;
-	private List<Candidate> waitList;
-	private List<Candidate> appList;
-	private List<Candidate> foreignCand;
-	//private List<Integer> dsCand;  //I think we don't need this
+	private List<String> waitList;
+	private List<String> appList;
+	private List<Integer> foreignCand;
+	private List<Integer> dsCand;
 	/** candidate whose index is equalto quota */
-	private Candidate candQuota; //
+	private String candQuota; //
 	
-	public VirtualProgramme(int cat, boolean pd, int quota){
+	public VirtualProgramme(String cat, boolean pd, int quota){
 		this.category=cat;
 		this.pd=pd;
 		this.quota=quota;
-		waitList = new LinkedList<Candidate>(0) ;
-		appList = new LinkedList<Candidate> (0);
+		waitList = new LinkedList<String>;
+		appList = new LinkedList<String> (0);
 		this.foreignCand = new LinkedList<Integer> (0);
 		this.dsCand = new LinkedList<Integer> (0);
 	}
 	
 	public void receiveApp (Candidate candidate){
-		if(if candidate.nat==true){
-			foreignCand.add(candidate);
-		}
-		else{
-			appList.add(candidate);
-		}
+		//sort
 		
 	}
 	
-	 public boolean orderedAdd(Candidate element,MeritList ml) {      
-	     //LinkedList<Integer> rejectedList=new LinkedList<Integer>();    
-		 ListIterator<Candidate> itr = waitList.listIterator(); //try starting frm reverse decreasingIterator
+	 public void orderedAdd(String element,MeritList ml) {      
+	        ListIterator<String> itr = waitList.listIterator(); //try starting frm reverse decreasingIterator
 	        int count=0;
 	        while(count<quota) {			//check limits
 	        	//if(itr==candQuota) change candQuota
 	            if (itr.hasNext() == false) {
 	                waitList.add(element);
-	                System.out.println("Adding "+element.id);
+	                System.out.println("Adding "+element);
 	                //change candQuota
-	                return true;
+	                return;
 	            }
 	            String elementInList = itr.next();
 	            /**element in list is less or equal to element to be added, insert it before elmInList */
-	            if (!ml.compareRank(elementInList.id,element.id)) {
+	            if (!ml.compareRank(elementInList,element)) {
 	                itr.previous();
 	                waitList.add(element);
-	                System.out.println("Adding "+element.id);
+	                System.out.println("Adding "+element);
 	                //change candQuota
-	                return true;
+	                return;
 	            }
 	            count++;
 	        }
-	        //rejectedList.add(element);
-	        return false;
+	        return;
 	    }
 	 /**supernumary quota */
-	 public LinkedList<Integer> removeExtra(MeritList ml){
+	 public void removeExtra(MeritList ml){
 		 /** last but one element strictly greater than last ,for supernumary */
 	        /** number by which waitlist exceeds quota  */
-		 LinkedList<Integer> rejectedList=new LinkedList<Integer>();  
-	     int extra=waitList.size()-quota;
+	        int extra=waitList.size()-quota;
          if(extra>0){ 
-        	 Candidate last=((LinkedList<Candidate>) waitList).getLast();
+        	 String last=((LinkedList<String>) waitList).getLast();
         	 if(candQuota==""){candQuota=waitList.get(quota-1);} 
         	 else { 
         		 /**last ranks are not equal,then remove last */				//mlMap hashmap of ml, shud pass d argumetn instead
-        		 while((ml.compareRank(candQuota,last.id) )){
- 	                System.out.println("Removing "+last.id);
- 	                rejectedList.add(last.index);
-        			last=((LinkedList<Candidate>) waitList).removeLast();			//removes last candidate frm list
-        			 //last=((LinkedList<Candidate>) waitList).getLast();
+        		 while((ml.compareRank(candQuota,last) )){
+ 	                System.out.println("Removing "+last);
+        			 last=((LinkedList<String>) waitList).removeLast();
+        			 //last=((LinkedList<String>) waitList).getLast();
         		 }
         	 }
          	
-         }
-         return rejectedList;
+         } 
 	 }
-	 
-//	 public void updateCurrProg(Vector<Candidate> candidateList){
-//		ListIterator<Integer> it=waitList.listIterator();
-//		while(it.hasNext()){
-//			int index=it.next();
-//			candidateList[it].currProg=
-//		}
-
-	 }
-	/** @param meritlist of corresponding category */
-	public LinkedList<Integer> filterApp(MeritList ml){
-		LinkedList<Integer> rejectedList=new LinkedList<Integer>();  
-		ListIterator<Candidate> itr=appList.listIterator();
+	
+	public void filterApp(MeritList ml){
+		ListIterator<String> itr=appList.listIterator();
 		while(itr.hasNext()){
-			Candidate element=itr.next();
-			/** if not added to waitlist add candidate to rejected list*/
-			if(!orderedAdd(element,ml)){rejectedList.add(element);}
+			String element=itr.next();
+			orderedAdd(element,ml);
 		}
-		rejectedList.addAll(removeExtra(ml));
-		
+		removeExtra(ml);
+		//for rest currProg="-1"
 		//foreign candidates?? @PALAK
-		/** update currProg */
-		/**make applist empty */
-		applist.clear();
-		return rejectedList;
+	}
+
+	public String getCategory() {
+		// TODO Auto-generated method stub
+		return category;
 	}
 
 }

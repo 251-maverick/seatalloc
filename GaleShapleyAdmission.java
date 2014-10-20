@@ -3,6 +3,8 @@ package seatallotment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Scanner;
 import java.util.Vector;
@@ -10,8 +12,12 @@ import java.util.Vector;
 public class GaleShapleyAdmission {
 	private HashMap<String,VirtualProgramme> vpMap; 
 	private Vector<HashMap<String,Integer> > mlMap;
+	private Vector<Candidate> candidateList;
+	private LinkedList<Integer> currCand;
 	
-	public GaleShapleyAdmission() throws FileNotFoundException{ 
+	public GaleShapleyAdmission() { 
+		candidateList=new Vector<Candidate>();
+		currCand=new LinkedList<Integer>();
 		this.createVP();
 		this.inputCandidate();
 		this.ranklistInput();
@@ -70,122 +76,82 @@ public class GaleShapleyAdmission {
 			/** taking each candidates input */
 			String[] field=s.split(",");
 			for(int i=0;i<3;i++){
-				Candidate c=new Candidate(field[0],field[1],field[2]);
+				Candidate c=new Candidate(field[0],field[1],field[2],candidateList.size());
 				c.addPreference(field[3]);			//put nxt and prv pointers
-				candidateList.add(c);		//set initial next pref also in this
+				currCand.add(candidateList.size());
+				 candidateList.add(c);		//set initial next pref also in this
 				//currCand.add(candidateList.size()-1);
 			}
 		}
 
 	}
-	//I'm putting back the original inputCandidate and made the cat changes in candidate constructor
-	/*public void inputCandidate() throws FileNotFoundException{
-		
-		Scanner scan=new Scanner(new File("./choices.csv"));
-		scan.nextLine();
-		String s;
-		while(scan.hasNextLine()){
-			s=scan.nextLine();
-			
-			/** taking each candidates input */
-	/*		String[] field=s.split(",");
-			if(field[1]=="GE" && field[2]=="N"){
-				Candidate c=new Candidate(field[0],0);
-				c.addPreference(field[3]);			//put nxt and prv pointers
-				candidateList.add(c);				//set initial next pref also in this
-			}
-			if(field[1]=="OBC" && field[2]=="N"){
-				Candidate c=new Candidate(field[0],1);
-				c.addPreference(field[3]);			
-				candidateList.add(c);	
-			}
-			if(field[1]=="SC" && field[2]=="N"){
-				Candidate c=new Candidate(field[0],2);
-				c.addPreference(field[3]);			
-				candidateList.add(c);	
-			}
-			if(field[1]=="ST" && field[2]=="N"){
-				Candidate c=new Candidate(field[0],3);
-				c.addPreference(field[3]);			
-				candidateList.add(c);	
-			}
-			if(field[1]=="GE" && field[2]=="Y"){
-				Candidate c=new Candidate(field[0],4);
-				c.addPreference(field[3]);			
-				candidateList.add(c);	
-			}
-			if(field[1]=="OBC" && field[2]=="Y"){
-				Candidate c=new Candidate(field[0],5);
-				c.addPreference(field[3]);			
-				candidateList.add(c);	
-			}
-			if(field[1]=="SC" && field[2]=="Y"){
-				Candidate c=new Candidate(field[0],6);
-				c.addPreference(field[3]);			
-				candidateList.add(c);	
-			}
-			if(field[1]=="ST" && field[2]=="Y"){
-				Candidate c=new Candidate(field[0],7);
-				c.addPreference(field[3]);			
-				candidateList.add(c);	
-			}
-		}
-		ListIterator<Candidate> itr=candidateList.listIterator();
-//		while(itr.hasNext()){
-//			itr.setNext(itr.next());
-//		}
-	}*/
-
-
 	
-//public void candidateApply(){
-//	ListIterator<Candidate> itr=candidateList.listIterator();
-//	while(itr.hasNext()){
-//		Candidate c=itr.next(); 
-//	    if(c.getCurrProg()=="0"){
-//	    	if(c.getNextPref() !=-1){
-//	    		vpMap.get(c.getNextPref()).receiveApp(c);
-//	    		c.setNextPref(c.getNextPref()+1);
-//	    	}
-//	    }
-//	}
-//}
+	
 
 public boolean candidateApply(){
 	boolean allAssigned=true,prefComplete=true;
-	ListIterator<Candidate> itr=candidateList.listIterator();
-	while(itr.hasNext()){
-		Candidate c=itr.next(); 
-	    if(c.getCurrProg()=="0" && c.nextPref !=-1){  //next pref mite nt b required later if using list of index
-	    	allAssigned=false;
-	    	if(c.getNextPref() !=-1){
-	    		prefComplete=false;
-	    		vpMap.get(c.getNextPref()).receiveApp(c);
-	    		c.setCurrProg(c.getNextPref());
-	    		c.setNextPref(c.getNextPref()+1);
-	    	}
+	//ListIterator<Integer> it=currCand.listIterator();
+	Integer index;
+	if(currCand.size()==0){return false;}
+	for (Iterator<Integer> it = currCand.iterator(); it.hasNext(); ){
+        index = it.next(); 
+		Candidate c=candidateList.get(index); //hoe its reference
+	    if(c.getNextPref() !=-1){
+	    	prefComplete=false;
+	    	vpMap.get(c.getNextPref()).receiveApp(c);
+	    	c.setCurrProg(c.getNextPref());
+	    	c.setNextPref(c.getNextPref()+1);
 	    }
+	 
 	}
-	if(allAssigned || prefComplete){return false;}
+	currCand.clear();
+	if(prefComplete){return false;}
 	else return true;
 		
 }
 
-//public void updateCurrProg(int index,boolean accepted){
-//	if(!accepted){candidateList[index].currProg="0";
-//	else {candidateList[index].currProg=nextPref;}
+//public boolean candidateApply(){
+//	boolean allAssigned=true,prefComplete=true;
+//	ListIterator<Integer> it=candidateList.listIterator();
+//	while(itr.hasNext()){
+//		Candidate c=itr.next(); 
+//	    if(c.getCurrProg()=="-1" ){  //next pref mite nt b required later if using list of index
+//	    	allAssigned=false;
+//	    	if(c.getNextPref() !=-1){
+//	    		prefComplete=false;
+//	    		vpMap.get(c.getNextPref()).receiveApp(c);
+//	    		c.setCurrProg(c.getNextPref());
+//	    		c.setNextPref(c.getNextPref()+1);
+//	    	}
+//	    }
+//	}
+//	if(allAssigned || prefComplete){return false;}
+//	else return true;
+//		
 //}
+
+public void updateCurrProg(LinkedList<Integer> rej){
+	ListIterator<Integer> it=rej.listIterator();
+	while(it.hasNext()){
+		int index=it.next();
+		candidateList.get(index).setCurrProg(-1);
+	}
+		
+}
 
 
 public void createWaitlist(){
 	LinkedList<Integer> rejectedList=new LinkedList<Integer>();
-	for (Map.Entry<String, VirtualProgramme> e : dsMap.entrySet()) {
-		VirtualProgramme vp=e.getValue();
-		vp.filterApp(ml.get(vp.category));  //vp category shud b int
+	for (VirtualProgramme vp : vpMap.values()) {
+		rejectedList=vp.filterApp(mlMap.get(vp.getCategory()));  //vp category shud b int
+		updateCurrProg(rejectedList);
+		currCand.addAll(rejectedList);
 	}
-	for (Map.Entry<String, VirtualProgramme> e : vpMap.entrySet()) {
-		VirtualProgramme vp=e.getValue();
-		vp.filterApp(ml.get(vp.category));  //vp category shud b int
+	for (VirtualProgramme vp : vpMap.values()) {
+		rejectedList=vp.filterApp(mlMap.get(vp.getCategory()));  //vp category shud b int
+		updateCurrProg(rejectedList);
+		currCand.addAll(rejectedList);
+
 	}
 }
 
@@ -208,8 +174,17 @@ public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'com
 		}
 	}
 
+public void output(){
+	for(int i=0;i<candidateList.size();i++){
+		System.out.println(candidateList.get(i).getId()+" "+candidateList.get(i).getCurrProg());
+	}
+}
+
 public void gsAlgo(){
-	
+		while(candidateApply()){
+			createWaitlist();
+		}
+		output();
 }
 
 }

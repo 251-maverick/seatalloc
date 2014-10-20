@@ -6,8 +6,7 @@ public class Candidate {
 	/**
 	 * @param args
 	 */
-	private String id;
-	int category;
+	private String id,category;
 	private boolean nat,pd,ds;   /** nat 0 implies indian, 1 implies foreign */
 	private Vector<String> preference;
 	private int nextPref;
@@ -15,101 +14,23 @@ public class Candidate {
 	/** pointer to next candidate */
 	private Candidate next;			//protected
 	private Candidate prv;
-	private Integer index;
 	
-	public Candidate(String id,String cat,String pd,Integer i){
+	
+	public Candidate(String id,String cat,String pd){
 		this.id=id;
-		ds=false;
+		this.category=cat;
 		if(cat=="F"){this.nat=true;}
-		else this.nat=false;
+		if(cat=="DS"){this.ds=true;}
 		
 		if(pd=="Y"){this.pd=true;}
 		else this.pd=false;
-		
-		if(cat=="GE"){category=0;}
-		else if(cat="OBC"){category=1;}
-		else if(cat="SC"){category=2;}
-		else if(cat="ST"){category=3;}
-		else if(cat="DS"){category=0;ds=true;}
-		else if(cat="DS-OBC"){category=1;ds=true;}
-		else if(cat="DS-SC"){category=2;ds=true;}
-		else if(cat="DS-ST"){category=3;ds=true;}
-		if(this.pd==true){this.category=this.category+4;}
 		nextPref=0;
 		setCurrProg("NONE");
 		preference=new Vector<String> (0);
-		this.index=i;
 	}
 	
-	public void addPreference(String prefList){                    //function to create a preference list for the candidate
-		String pref;
-		if(prefList.indexOf('_')==-1) pref=prefList;               
-		else pref=prefList.substring(0,prefList.indexOf('_'));
-		int prev=-1,k=-1,last;
-		last=prefList.lastIndexOf('_');
-		do{
-			prev=k;
-			k=prefList.indexOf('_',k+1);
-			if(k!=-1) pref=prefList.substring(prev+1,k);
-			else pref=prefList.substring(last+1);
-			if(category==0){
-				preference.addElement(pref+"-0");           //if pref is B4110 then B4110-0 is added to preference list
-				preference.addElement(pref+"-1");       //0..7 represent categories as given in table of lab10 statement..top to down
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-5");
-			}
-			else if(category==1){
-				preference.addElement(pref+"-0");
-				preference.addElement(pref+"-1");
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-5");
-			}
-			else if(category==2){
-				preference.addElement(pref+"-0");
-				preference.addElement(pref+"-2");
-				preference.addElement(pref+"-1");
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-5");
-				preference.addElement(pref+"-6");
-			}
-			else if(category==3){
-				preference.addElement(pref+"-0");
-				preference.addElement(pref+"-3");
-				preference.addElement(pref+"-1");
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-5");
-				preference.addElement(pref+"-7");
-			}
-			else if(category==4){
-				preference.addElement(pref+"-0");
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-1");
-				preference.addElement(pref+"-5");
-			}
-			else if(category==5){
-				preference.addElement(pref+"-0");
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-1");
-				preference.addElement(pref+"-5");
-			}
-			else if(category==6){
-				preference.addElement(pref+"-0");
-				preference.addElement(pref+"-2");
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-6");
-				preference.addElement(pref+"-1");
-				preference.addElement(pref+"-5");
-			}
-			else if(category==7){
-				preference.addElement(pref+"-0");
-				preference.addElement(pref+"-3");
-				preference.addElement(pref+"-4");
-				preference.addElement(pref+"-7");
-				preference.addElement(pref+"-1");
-				preference.addElement(pref+"-5");
-			}
-		} while(k!=-1);
-			
+	public void addPreference(String prefList){
+		//currPref=0;			//complete
 	}
 		
 	
