@@ -1,10 +1,10 @@
-package seatallocation;
+package seatallotment;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class MeritList {
-
-	private HashMap<String,Integer> rankmap;                                            
+	private HashMap<String,Integer> rankMap;                                            
 	private int category;
 	
 	private class CombinedRank{                                         
@@ -16,69 +16,67 @@ public class MeritList {
 		}
 		
 		public String getCat(){
-			return category;
+			return cat;
+		}
+		
+		public Integer getRank(){
+			return rank;
 		}
 			
 	}
+	
 	public MeritList(int cat){                                          ////with argument as cat
-		rankmap=new HashMap<String,Integer>();			//destructor
+		rankMap=new HashMap<String,Integer>();			//destructor
 		category=cat;
 	}
+	//@PALAK where's getMAp req.
 	public HashMap<String,Integer> getMap(){                       //returns hashmap datamember of meritlist class
-		return this.rankmap;
+		return this.rankMap;
 	}
 	public int size(){                             //return size of hashmap datamember of meritlist class
-		return rankmap.size();
+		return rankMap.size();
 	}
 	public void updateRank(int val){                //increases values(here rank) by a given val(given as parameter) 
-		Set<String> set=rankmap.keySet();
-		for(String s: set) rankmap.put(s,rankmap.get(s)+val);
+		Set<String> set=rankMap.keySet();
+		for(String s: set) rankMap.put(s,rankMap.get(s)+val);
 	}
 	public void addMap(MeritList m){                //adds another hashmap to the hashmap of given meritllist class
-		this.rankmap.putAll(m.getMap());
-	}
-	public int getRank(String id){
-		return rankmap.get(id);
+		this.rankMap.putAll(m.getMap());
 	}
 	
+	//public void addCand(String id,Integer rank){    
+		//if(rank!=0){
+			//rankMap.put(id,new CombinedRank(id,rank)); //kya kiya h?
+		//}
 	
-	public void addCand(String id,Integer rank){    
-		if(rank!=0){
-			rankMap.put(id,new CombinedRank(id,rank));
+	
+	
+	public boolean compareRank(CombinedRank other){			//improve
+		if(this.category=="OBC"){
+		//do later
 		}
 	}
 	
-	
-			
-			
-			
-			
-			
-			
-			
-			
-			//do this
-//			for(Map.Entry e : a.entrySet())  
-//				  if(!b.containsKey(e.getKey())
-//				    b.put(e.getKey(), e.getValue());		
-			}
+	public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'combined' hashmap which caters to seat deservation
+		if(cat==0 || cat==2 || cat==3){                           //y here not in ml @Palak
+		return meritlist[cat];
 	}
-	
-	public boolean isGreater(Candidate a,Candidate b){  //true if a's rank is larger than b's rank
-		if(this.getRank(a.getId())>this.getRank(b.getId())) return true;
-		return false;
-	}
-	public boolean compareRank(Candidate a,Candidate b){ //assumption:a is always waitlisted last candidate and b is in applist 
-		if(this.getRank(b.getId())==0) return false;    //return true if eligible to come in waitlist
-		if(isGreater(a,b)) return true;
-		else if(isGreater(b,a)) return false;
-		else return true;
-	}
-	
-		
-		
-		//}
+	else if(cat==1 || cat==4 || cat==5){
+		meritlist[0].updateRank(meritlist[cat].size());
+		meritlist[cat].addMap(meritlist[0]);
+		return meritlist[cat];
 	}
 	
 	
+	else if(cat==6 || cat==7){
+		meritlist[cat-4].updateRank(meritlist[cat].size());
+		meritlist[cat].addMap(meritlist[cat-4]);
+		return meritlist[cat];
+	}
+}
+	public boolean check(Candidate c) {
+		if(rankMap.containsKey(c.getId())){return true;}
+		else {return false;}	
+	}
 
+}
