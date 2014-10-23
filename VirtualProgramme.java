@@ -5,7 +5,7 @@ import java.util.ListIterator;
 public class VirtualProgramme {
 
 	private int category;	//
-	private boolean pd;
+	private String prog;
 	private int quota;
 	private List<Candidate> waitList;
 	private List<Candidate> appList;
@@ -13,23 +13,37 @@ public class VirtualProgramme {
 	//private List<Integer> dsCand;  //I think we don't need this
 	/** candidate whose index is equalto quota */
 	private ListIterator<Candidate> candQuota; //
+	private Candidate lc;
 	
-	public VirtualProgramme(int cat, boolean pd, int quota){
+	public VirtualProgramme(int cat, int quota, String prog){
 		this.setCategory(cat);
-		this.pd=pd;
+		//this.pd=pd;
 		this.quota=quota;
 		waitList = new LinkedList<Candidate>() ;
 		appList = new LinkedList<Candidate> ();
 		this.foreignCand = new LinkedList<Candidate> ();
 		candQuota=waitList.listIterator();
 		//this.dsCand = new LinkedList<Candidate> ();
+		this.prog=prog;
 	}
 	
 	public VirtualProgramme(){
-		this.category=8;
+		this.category=0; //ds cat 8? dunno which cat @PALAK
 		this.quota=2;
 		waitList = new LinkedList<Candidate> ();
 		appList = new LinkedList<Candidate> ();
+		foreignCand = new LinkedList<Candidate> ();
+		//this.prog=prog;
+		
+	}
+	
+	public void displayList(LinkedList<Integer> list){
+		ListIterator<Integer> it=list.listIterator();
+		int i=1;
+		while(it.hasNext()){
+			System.out.println(i +" "+it.next());
+			i++;
+		}
 	}
 	
 	public void receiveApp (Candidate candidate){
@@ -44,24 +58,27 @@ public class VirtualProgramme {
 	
 	 public boolean orderedAdd(Candidate element,MeritList ml) {      
 	     //LinkedList<Integer> rejectedList=new LinkedList<Integer>();    
-		 if(!ml.check(element)){return false;}
-		 
+		 if(!ml.check(element)){
+			System.out.println(element.getId()+" not in meritlist "+prog );
+			 return false;
+			 }
+		 //use sort built in
 		 ListIterator<Candidate> itr = waitList.listIterator(); //try starting frm reverse decreasingIterator
 	        int count=0;
 	        while(count<quota) {			//check limits
 	        	//if(itr==candQuota) change candQuota
 	            if (itr.hasNext() == false) {
-	                waitList.add(element);
-	                //System.out.println("Adding "+element.id);
+	                itr.add(element);
+	                System.out.println("Adding "+element.getId());
 	                //change candQuota
 	                return true;
 	            }
 	            Candidate elementInList = itr.next();
 	            /**element in list is less or equal to element to be added, insert it before elmInList */
-	            if (!ml.compareRank(elementInList.getId(),element.getId())) {
+	            if (!ml.compareRank(elementInList,element)) {	//imp to have not
 	                itr.previous();
-	                waitList.add(element);
-	                //System.out.println("Adding "+element.id);
+	                itr.add(element);
+	                System.out.println("Adding "+element.getId());
 	                //change candQuota
 	                return true;
 	            }
@@ -81,39 +98,51 @@ public class VirtualProgramme {
         	 Candidate last=((LinkedList<Candidate>) waitList).getLast();
         	 // if(candQuota==""){candQuota=waitList.get(quota-1);} 
         	 //else { 
-        	 String id=candQuota.next().getId();
+        	 //String id=candQuota.next().getId();
         		 /**last ranks are not equal,then remove last */				//mlMap hashmap of ml, shud pass d argumetn instead
-        		 while((ml.compareRank(id.,last.getId()) )){
- 	                //System.out.println("Removing "+last.getId());
+        	//Candidate c=candQuota.next();	
+        	 while((ml.compareRank(lc,last) )){
+ 	                System.out.println("Removing "+last.getId());
  	                rejectedList.add(last.getIndex());
-        			last=((LinkedList<Candidate>) waitList).removeLast();			//removes last candidate frm list
-        			 //last=((LinkedList<Candidate>) waitList).getLast();
+        			((LinkedList<Candidate>) waitList).removeLast();			//removes last candidate frm list
+        			 last=((LinkedList<Candidate>) waitList).getLast();
         		 }
+        	 //c=candQuota.previous();
         	 }
          	
          
          return rejectedList;
 	 }
 	 
-//	 public void updateCurrProg(Vector<Candidate> candidateList){
-//		ListIterator<Integer> it=waitList.listIterator();
-//		while(it.hasNext()){
-//			int index=it.next();
-//			candidateList[it].currProg=
-//		}
+	 public LinkedList<Integer> foreign(MeritList ml){
+		 LinkedList<Integer> rejectedList=new LinkedList<Integer>();  
+		 ListIterator<Candidate> itr=foreignCand.listIterator();
+			while(itr.hasNext()){	//change to for loop
+				Candidate curr=itr.next();
+				Candidate last=((LinkedList<Candidate>) waitList).getLast();
+				if((last.category!=0) ||(ml.compareRank(last,curr))){			//true if last is not gen or  if curr is  better than or = last
+					System.out.println("removing f: "+curr.getId());
+					itr.remove();				
+					rejectedList.add(curr.getIndex());							
+				}
+			}
+			return rejectedList;
+	 }
 
 	 
 	/** @param meritlist of corresponding category */
 	public LinkedList<Integer> filterApp(MeritList ml){
 		LinkedList<Integer> rejectedList=new LinkedList<Integer>();  
 		ListIterator<Candidate> itr=appList.listIterator();
+		displayAppList();
 		while(itr.hasNext()){
 			Candidate element=itr.next();
 			/** if not added to waitlist add candidate to rejected list*/
 			if(orderedAdd(element,ml)){
 				if(waitList.size()>=quota){
-					if(candQuota.hasPrevious()){candQuota.previous();}
-					else { candQuota=waitList.listIterator(quota-1);}
+//					if(candQuota.hasPrevious()){candQuota.previous();}
+//					else { candQuota=waitList.listIterator(quota-1);}
+					lc=waitList.get(quota-1);			//change dis, it will take too long
 				}
 			}
 			else{
@@ -122,21 +151,25 @@ public class VirtualProgramme {
 		}
 		rejectedList.addAll(removeExtra(ml));
 		
-		//foreign candidates?? @PALAK
-		if(waitList.size()<quota){}
-		else {
-			ListIterator<Candidate> forItr=foreignCand.listIterator();
-			while(itr.hasNext()){
-				Candidate curr=itr.next();
-				Candidate last=waitList.get(waitList.size()-1);
-				if(ml.compareRank(curr.getId(),last.getId())){//not sure if this should be true or false @charmi
-					foreignCand.remove(curr);				//if last better than curr
-					rejectedList.add(curr.getIndex());							//
+		//foreign candidates create a separate fn
+				if(waitList.size()<quota){}
+				else {
+					rejectedList.addAll(foreign(ml));
+//					ListIterator<Candidate> forItr=foreignCand.listIterator();
+//					while(itr.hasNext()){	//change to for loop
+//						
+//						Candidate curr=itr.next();
+//						Candidate last=((LinkedList<Candidate>) waitList).getLast();
+//						if(ml.compareRank(last,curr)){//not sure if this should be true or false @charmi
+//							foreignCand.remove(curr);				//if last better than curr
+//							rejectedList.add(curr.getIndex());							//
+//						}
+//					}
 				}
-			}
-		/** update currProg */
 		/**make applist empty */
 		appList.clear();
+		displayList(rejectedList);
+		displayWaitList();
 		return rejectedList;
 	}
 
@@ -147,6 +180,28 @@ public class VirtualProgramme {
 	public void setCategory(int category) {
 		this.category = category;
 	}
+	
+	public void displayWaitList(){
+		System.out.println(prog+ " waitlist");
+		ListIterator<Candidate> it=waitList.listIterator();
+		int i=1;
+		while(it.hasNext()){
+			System.out.println(i +" "+it.next().getId());
+			i++;
+		}
+	}
+	
+	public void displayAppList(){
+		System.out.println(prog+" applist");
+		ListIterator<Candidate> it=appList.listIterator();
+		int i=1;
+		while(it.hasNext()){
+			System.out.println(i +" "+it.next().getId());
+			i++;
+		}
+	}
+	
+	
 
 }
 //hashmap for v.p.

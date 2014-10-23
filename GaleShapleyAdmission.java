@@ -1,4 +1,4 @@
-package seatallotment;
+//package seatallotment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,171 +6,162 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Vector;
 
 public class GaleShapleyAdmission {
+	private String filepath;
 	private HashMap<String,VirtualProgramme> vpMap; 
 	private Vector<MeritList> mlMap;
 	private Vector<Candidate> candidateList;
 	private LinkedList<Integer> currCand;
 	
-	public GaleShapleyAdmission() { 
+	public GaleShapleyAdmission(String path) { 
+		filepath=path;
 		candidateList=new Vector<Candidate>();
 		currCand=new LinkedList<Integer>();
-		this.createVP();
-		this.inputCandidate();
-		this.ranklistInput();
+		mlMap=new Vector<MeritList>();
+		createVp();
+		inputCandidate();
+		rankListInput();
+		createMl();
 	}
 	
-	public void createVP() throws FileNotFoundException{
+	public void createVp() {
 		vpMap=new HashMap<String,VirtualProgramme>();   //virtualProgramme is hashmap of (code_of_program+'-category_code',corresponding virtual program)
-		Scanner scan=new Scanner(new File("./programs.csv"));
-		boolean firstline=true;
+		try{
+		Scanner scan=new Scanner(new File(filepath+"/programs.csv"));
 		String s;
+		scan.nextLine();
 		while(scan.hasNextLine()){                              //reads from program.csv and creates virtualProgramme hashmap
-			if(firstline){
-				firstline=false;
-				continue;
-			}
 			s=scan.nextLine();
 			String[] field=s.split(",");
 			for(int i=3;i<11;i++){
-				VirtualProgramme p;
 				int y = Integer.parseInt(field[i]);
-				p=new VirtualProgramme(i-3,y);               //see if vp object can be created without any import or smthing
-				vpMap.put(field[1]+"-"+(i-3),p);
+				String prog=field[1]+"-"+(i-3);
+				VirtualProgramme p=new VirtualProgramme(i-3,y,prog);  //see if vp object can be created without any import or smthing
+				//System.out.println("prog "+prog);
+				vpMap.put(prog,p);
 			}
+		 }
 		}
-		VirtualProgramme p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17;
-		p0=new VirtualProgramme();p1=new VirtualProgramme();p2=new VirtualProgramme();
-		p3=new VirtualProgramme();p4=new VirtualProgramme();p5=new VirtualProgramme();
-		p6=new VirtuaProgramme();p7=new VirtualProgramme();p8=new VirtualProgramme();
-		p9=new VirtualProgramme();p10=new VirtualProgramme();p11=new VirtualProgramme();
-		p12=new VirtualProgramme();p13=new VirtualProgramme();p14=new VirtualProgramme();
-		p15=new VirtualProgramme();p16=new VirtualProgramme();p17=new VirtualProgramme();
-		vpMap.put("B",p0);vpMap.put("D",p1);vpMap.put("K",p2);vpMap.put("M",p3);vpMap.put("G",p4);
-		vpMap.put("R",p5);vpMap.put("W",p6);vpMap.put("A",p7);vpMap.put("C",p8);vpMap.put("E",p9);
-		vpMap.put("H",p10);vpMap.put("J",p11);vpMap.put("N",p12);vpMap.put("P",p13);vpMap.put("S",p14);
-		vpMap.put("U",p15);vpMap.put("V",p16);vpMap.put("S",p17);
+		catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    }
+		VirtualProgramme[] p=new VirtualProgramme[18];
+		for(int i=0;i<18;i++){p[i]=new VirtualProgramme();}
+		vpMap.put("B",p[0]);vpMap.put("D",p[1]);vpMap.put("K",p[2]);vpMap.put("M",p[3]);vpMap.put("G",p[4]);
+		vpMap.put("R",p[5]);vpMap.put("W",p[6]);vpMap.put("A",p[7]);vpMap.put("C",p[8]);vpMap.put("E",p[9]);
+		vpMap.put("H",p[10]);vpMap.put("J",p[11]);vpMap.put("N",p[12]);vpMap.put("P",p[13]);vpMap.put("S",p[14]);
+		vpMap.put("U",p[15]);vpMap.put("V",p[16]);vpMap.put("S",p[17]);	
 		
+		//displayVpmap();
 	}
-
-	public void ranklistInput() throws FileNotFoundException{
-		for(int i=0;i<8;i++){ mlMap.add(i,new MeritList(i));} //initialize the list
-		Scanner scan=new Scanner(new File("./ranklist.csv"));
+	
+	
+	public void rankListInput() {
+		
+		for(int i=0;i<8;i++){MeritList m=new MeritList(i); mlMap.add(m);} //initialize the list
+		try{
+		Scanner scan=new Scanner(new File(filepath+"/ranklist.csv"));
 		scan.nextLine();
-		int lastRank[];
+		float[] lastRank=new float[8];
 		while(scan.hasNextLine()){
 			String s=scan.nextLine();
 			String[] fields=s.split(",");
-			for(int i=3;i<11;i++){
-				Integer rank=Integer.parseInt(fields[i]);
+			for(int i=3;i<7;i++){
+				float rank=Float.parseFloat(fields[i]);
 				if(rank!=0){
-					if(rank>=lastRank){lastRank[i-3]=rank;}
+					if(rank>= lastRank[i-3]){lastRank[i-3]=rank;}
 					mlMap.get(i-3).addCand(fields[0],rank);
 				}
+				float rank2=Float.parseFloat(fields[i+5]);
+				if(rank2!=0){
+					if(rank2>= lastRank[i+1]){lastRank[i+1]=rank2;}
+					mlMap.get(i+1).addCand(fields[0],rank2);
+				}
 			}
+			
 		}
-		set
+		for(int i=0;i<8;i++){
+			mlMap.get(i).setLastRank(lastRank[i]);
+			//mlMap.get(i).displayMl();
+		}
+		}
+		catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    }
+		
+		
 	}//end of RanklistInput
 	
+	public void createMl(){
+		mlMap.get(1).combineRank(mlMap.get(0));
+		mlMap.get(4).combineRank(mlMap.get(0));
+		mlMap.get(5).combineRank(mlMap.get(0));
+		mlMap.get(6).combineRank(mlMap.get(2));
+		mlMap.get(7).combineRank(mlMap.get(3));
+
+	}
 	
-	public void inputCandidate() throws FileNotFoundException{
-		
-		Scanner scan=new Scanner(new File("./choices.csv"));
+	
+	public void inputCandidate() {
+		try{
+		Scanner scan=new Scanner(new File(filepath+"/choices.csv"));
 		scan.nextLine();
 		String s;
-		while(scan.hasNextLine()){
-			s=scan.nextLine();
-			
-			/** taking each candidates input */
-			String[] field=s.split(",");
-			for(int i=0;i<3;i++){
+			while(scan.hasNextLine()){
+				s=scan.nextLine();
+				/** taking each candidates input */
+				String[] field=s.split(",");
 				Candidate c=new Candidate(field[0],field[1],field[2],candidateList.size());
 				c.addPreference(field[3]);			//put nxt and prv pointers
 				currCand.add(candidateList.size());
-				 candidateList.add(c);		//set initial next pref also in this
+				 candidateList.add(c);		
 				//currCand.add(candidateList.size()-1);
+				c.displayCand();
+			
 			}
 		}
-
-	}
-	
-	public MeritList combinedRankList(int cat,MeritList meritlist[]){ //creates 'combined' hashmap which caters to seat deservation
-		if(cat==0 || cat==2 || cat==3){                           
-		return meritlist[cat];
-	}
-	else if(cat==1 || cat==4 || cat==5){
-		meritlist[0].updateRank(meritlist[cat].size());
-		meritlist[cat].addMap(meritlist[0]);
-		return meritlist[cat];
+		catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    }
+		
 	}
 	
 	
-	else if(cat==6 || cat==7){
-		meritlist[cat-4].updateRank(meritlist[cat].size());
-		meritlist[cat].addMap(meritlist[cat-4]);
-		return meritlist[cat];
-	}
-	else if(cat==8){
-		return meritlist[0];
-	}
-}
 
 public boolean candidateApply(){
-	boolean allAssigned=true,prefComplete=true;
-	//ListIterator<Integer> it=currCand.listIterator();
+	boolean prefComplete=true;
 	Integer index;
 	if(currCand.size()==0){return false;}
 	for (Iterator<Integer> it = currCand.iterator(); it.hasNext(); ){
         index = it.next(); 
-		Candidate c=candidateList.get(index); //hoe its reference
+		Candidate c=candidateList.get(index); 
 	    if(c.getNextPref() !=-1){
 	    	prefComplete=false;
-	    	if((c.getNextProg()).endsWith("ds")){                    ////this if bracket added by r
-	    		String s=(c.getNextProg()).substring(0,0);
+	    	if((c.getNextProg()).endsWith("ds")){                    
+	    		String s=(c.getNextProg()).substring(0,1);
 	    		System.out.println("Adding app to ds program "+s);
 	    		vpMap.get(s).receiveApp(c);
 	    		c.setCurrProg(c.getNextPref());
 		    	c.setNextPref(c.getNextPref()+1);
 	    	}
 	    	else {
-	    		vpMap.get(c.get).receiveApp(c);
+	    		vpMap.get(c.getNextProg()).receiveApp(c); //is dis correct
 	    	    c.setCurrProg(c.getNextPref());
 	    	    c.setNextPref(c.getNextPref()+1);
-	    }
-//	    	vpMap.get(c.getNextPref()).receiveApp(c);
-//	    	c.setCurrProg(c.getNextPref());
-//	    	c.setNextPref(c.getNextPref()+1);
+	    	}
+
 	    }
 	 
 	}
 	currCand.clear();
 	if(prefComplete){return false;}
-	else return true;
+	else {return true;}
 		
 }
-
-//public boolean candidateApply(){
-//	boolean allAssigned=true,prefComplete=true;
-//	ListIterator<Integer> it=candidateList.listIterator();
-//	while(itr.hasNext()){
-//		Candidate c=itr.next(); 
-//	    if(c.getCurrProg()=="-1" ){  //next pref mite nt b required later if using list of index
-//	    	allAssigned=false;
-//	    	if(c.getNextPref() !=-1){
-//	    		prefComplete=false;
-//	    		vpMap.get(c.getNextPref()).receiveApp(c);
-//	    		c.setCurrProg(c.getNextPref());
-//	    		c.setNextPref(c.getNextPref()+1);
-//	    	}
-//	    }
-//	}
-//	if(allAssigned || prefComplete){return false;}
-//	else return true;
-//		
-//}
 
 public void updateCurrProg(LinkedList<Integer> rej){
 	ListIterator<Integer> it=rej.listIterator();
@@ -183,34 +174,53 @@ public void updateCurrProg(LinkedList<Integer> rej){
 
 
 public void createWaitlist(){
-	LinkedList<Integer> rejectedList=new LinkedList<Integer>();
-	for (VirtualProgramme vp : vpMap.values()) {
-		rejectedList=vp.filterApp(mlMap.get(vp.getCategory()));  
-		//vp category shud b int
+	Iterator<VirtualProgramme> it=vpMap.values().iterator();
+	while(it.hasNext()){
+		VirtualProgramme vp=(VirtualProgramme) it.next();
+		LinkedList<Integer> rejectedList=new LinkedList<Integer>(vp.filterApp(mlMap.get(vp.getCategory())));
 		updateCurrProg(rejectedList);
 		currCand.addAll(rejectedList);
 	}
-	for (VirtualProgramme vp : vpMap.values()) {
-		rejectedList=vp.filterApp(mlMap.get(vp.getCategory()));  //vp category shud b int
-		updateCurrProg(rejectedList);
-		currCand.addAll(rejectedList);
+}
 
+public void displayVpmap(){
+	System.out.println("vpmap ");
+	for(Map.Entry<String,VirtualProgramme> m:vpMap.entrySet()){
+		System.out.print(m.getKey()+" ");
+		m.getValue().displayWaitList();
+	}
+}
+
+public void displayCurrCand(){
+	System.out.println("Current cand ");
+	ListIterator<Integer> it=currCand.listIterator();
+	while(it.hasNext()){
+		int n=it.next();
+		System.out.println(n+" "+candidateList.get(n).getId());
+		//candidateList.get(n).displayCand();
 	}
 }
 
 
 
 public void output(){
+	System.out.println("output");
 	for(int i=0;i<candidateList.size();i++){
-		System.out.println(candidateList.get(i).getId()+" "+candidateList.get(i).getCurrProg().substring(0, 4));
+		if(candidateList.get(i).getCurrProg().equals("-1")){ 
+			System.out.println(candidateList.get(i).getId()+" -1");
+		}
+		else{ System.out.println(candidateList.get(i).getId()+" "+candidateList.get(i).getCurrProg().substring(0,2));} // @PALAK substring index
 	}
 }
 
-public void gsAlgo(){
+	public void gsAlgo(){
+	
 		while(candidateApply()){
 			createWaitlist();
+			//displayCurrCand();
+		
 		}
 		output();
-}
+	}
 
 }

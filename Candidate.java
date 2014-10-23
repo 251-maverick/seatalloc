@@ -1,5 +1,5 @@
-import java.util.Vector;
 
+import java.util.Vector;
 
 public class Candidate {
 
@@ -18,23 +18,23 @@ public class Candidate {
 	public Candidate(String id,String cat,String pd,Integer i){
 		this.setId(id);
 		ds=false;
-		if(cat=="F"){this.nat=true;category=0;}
-		else this.nat=false;
+		if(cat.equals("F")){this.nat=true;category=0;}			// category of foreign cand :gen, is their rank cml:gen?
+		else {this.nat=false;}
+		if(pd.equals("Y")){this.pd=true;}
+		else {this.pd=false;}
 		
-		if(pd=="Y"){this.pd=true;}
-		else this.pd=false;
+		if(cat.equals("GE")){category=0;}
+		else if(cat.equals("OBC")){category=1;}
+		else if(cat.equals("SC")){category=2;}
+		else if(cat.equals("ST")){category=3;}
+		else if(cat.equals("DS")){category=0;ds=true;} //@PALAK DS or DS-GE?
+		else if(cat.equals("DS-OBC")){category=1;ds=true;}
+		else if(cat.equals("DS-SC")){category=2;ds=true;}
+		else if(cat.equals("DS-ST")){category=3;ds=true;}
 		
-		if(cat=="GE"){category=0;}
-		else if(cat=="OBC"){category=1;}
-		else if(cat=="SC"){category=2;}
-		else if(cat=="ST"){category=3;}
-		else if(cat=="DS"){category=0;ds=true;}
-		else if(cat=="DS-OBC"){category=1;ds=true;}
-		else if(cat=="DS-SC"){category=2;ds=true;}
-		else if(cat=="DS-ST"){category=3;ds=true;}
-		if(this.pd==true){this.category=this.category+4;}
+		if(this.pd){this.category=this.category+4;}
 		nextPref=0;
-		setCurrProg(-1);
+		currProg="-1";
 		preference=new Vector<String> (0);
 		this.setIndex(i);
 	}
@@ -51,7 +51,7 @@ public class Candidate {
 			if(k!=-1) pref=prefList.substring(prev+1,k);
 			else pref=prefList.substring(last+1);
 			if(category==0){
-				if(ds) preference.addElement(pref+"-ds");
+				if(ds){ preference.addElement(pref+"-ds");}
 				preference.addElement(pref+"-0");           //if pref is B4110 then B4110-0 is added to preference list
 				preference.addElement(pref+"-1");       //0..7 represent categories as given in table of lab10 statement..top to down
 				preference.addElement(pref+"-4");
@@ -115,7 +115,6 @@ public class Candidate {
 				preference.addElement(pref+"-5");
 			}
 		} while(k!=-1);
-		for(int i=0;i<preference.size();i++)System.out.println(preference.get(i)); //remove later
 	}
 		
 	
@@ -141,7 +140,7 @@ public class Candidate {
 
 	public void setCurrProg(int index) {
 		if(index==-1){this.currProg="-1";}
-		this.currProg = preference.get(index);
+		else{ this.currProg = preference.get(index);}
 	}
 	
 	public String getNextProg(){
@@ -154,7 +153,7 @@ public class Candidate {
 
 	public void setNextPref(int i) {
 		if(i<preference.size()){nextPref=i;}
-		else {i=-1;}
+		else {nextPref=-1;}
 	}
 
 	public String getId() {
@@ -173,7 +172,17 @@ public class Candidate {
 		this.index = index;
 	}
 	
+	public void displayCand(){
+		System.out.println(id+ " cat "+category+ " pd "+pd +" curr "+currProg+ " nextProg "+ getNextProg());
+	}
 	
+	public void displayPref(){
+		System.out.println("preflist: "+id);
+		for(int i=0;i<preference.size();i++){
+			System.out.print(preference.get(i)+ " ");
+		}
+		System.out.print('\n');
+	}
 
 	
 
